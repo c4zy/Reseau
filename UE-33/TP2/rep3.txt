@@ -1,0 +1,79 @@
+Sur l'hôte uniquement
+
+        Exécutez la commande: ping www.univ-tln.fr. Quelle est l'adresse IP de cette machine ?
+        10.1.64.80
+        
+        Que donnent les commandes host www et la recherche sur le site http://wq.apnic.net/static/search.html pour l'IP 193.49.96.26 (commande host www.univ-tln.fr mais de l'extérieur).
+        Pour "host www":
+        www.univ-tln.fr is an alias for lbwebdmz.univ-tln.fr.
+		lbwebdmz.univ-tln.fr has address 10.1.64.80
+		
+		Pour la recherche:
+		-----------------------------------------------------------------------------------
+		% APNIC found the following authoritative answer from: whois.ripe.net
+
+		% This is the RIPE Database query service.
+		% The objects are in RPSL format.
+		%
+		% The RIPE Database is subject to Terms and Conditions.
+		% See https://docs.db.ripe.net/terms-conditions.html
+
+		% Note: this output has been filtered.
+		%       To receive output for a database update, use the "-B" flag.
+
+		% Information related to '193.49.96.0 - 193.49.96.255'
+
+		% Abuse contact for '193.49.96.0 - 193.49.96.255' is 'certsvp@renater.fr'
+
+		inetnum:	193.49.96.0 - 193.49.96.255
+		netname:	FR-U-TOULON
+		descr:	Universite de Toulon
+		remarks:	**** BEGIN INFORMATION FROM OLD OBJECT ****
+		remarks:	netname:        FR-UTV
+		remarks:	descr:          Universite du Sud Toulon - Var
+		remarks:	descr:          BP20132, 83957 La Garde CEDEX, France
+		remarks:	**** END INFORMATION FROM OLD OBJECT ****
+		country:	FR
+		admin-c:	GPRT556-RIPE
+		tech-c:	GPRT556-RIPE
+		status:	ASSIGNED PA
+		mnt-by:	RENATER-MNT
+		remarks:	changed:        rensvp@renater.fr 20000831
+		remarks:	changed:        rensvp@renater.fr 20230822
+		created:	2002-04-11T13:35:01Z
+		last-modified:	2023-08-24T06:57:32Z
+		source:	RIPE
+
+		% Information related to '193.48.0.0/14AS2200'
+
+		route:	193.48.0.0/14
+		descr:	RENATER
+		origin:	AS2200
+		mnt-by:	RENATER-MNT
+		remarks:	changed:        RenSVP@Renater.fr 19991207
+		created:	1970-01-01T00:00:00Z
+		last-modified:	2015-08-07T13:36:14Z
+		source:	RIPE
+
+		% This query was served by the RIPE Database Query Service version 1.124.1 (DEXTER)
+ 		-----------------------------------------------------------------------------------
+ 		
+        Exécutez la commande host 193.49.96.26 1.1.1.1 qui vous donne le nom de cette machine. Que concluez-vous de cette manipulation et de ses résultats (expliquez bien sûr).
+        Cette commande permet de touver tous les sites heberges par 193.49.96.26
+        	
+        Quel est le rôle de la commande host ?
+        host permet de trouver les noms de domaines liees a une addresse
+        
+        Exécutez la commande: ping 10.9.185.2. Exécutez la commande host 10.9.185.2 qui vous donne le nom de cette machine. Exécutez la commande host 10.9.185.2 1.1.1.1 et host sinfo2.univ-tln.fr 1.1.1.1. Expliquez le résultat obtenu.
+        On remarque que l'@ 10.9.185.2 n'est pas sur la DNS de 1.1.1.1
+        
+        Exécutez la commande tracepath avec comme paramètre l'IP de votre machine. Faire de même avec l'IP d'une des machines de la salle. Faire maintenant la commande tracepath sasha, puis tracepath www et tracepath webmail. expliquez les réponses que vous renvoient ces commandes.
+        tracepath "@ hote" donne 1 resultat car la conclusion est instantanee
+        tracepath "@ adjacent" donne 2 resultats car la conclusion prend deux etapes (demande puis reponse)
+        trace path "@ non adjacent" donne >2 resultats car la conclusion passe par un ou plusieurs intermediaires (routeurs)
+        
+        À partir des observations précédentes essayez de déterminer l'adresse IP et l'adresse MAC de la machine www et s'il y a un problème, expliquez pourquoi.
+        @ IPv4 - 10.1.64.80
+        @ MAC - il n'est pas sur la table arp
+
+

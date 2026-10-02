@@ -1,0 +1,3 @@
+Depuis la machine hôte, connectez-vous au compte user, mot de passe user, de client. À quoi correspond et à quoi sert la question qui est posée lors de la première connexion ?
+
+La question demande si on est sure de vouloir rajouter le IP cible #en permanence# a la DNS de la machine originelle

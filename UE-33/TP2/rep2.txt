@@ -1,0 +1,42 @@
+En utilisant les commandes ip et netstat étudiées au TP-1, déterminez :
+
+        Quelles sont toutes les adresses IP de votre machine pour toutes ses interfaces ?
+        loopback - 127.0.0.1/8
+        eth0 - 10.9.186.133/21
+        vboxnet0 - 192.168.56.1/24
+        
+        Quelles sont les adresses MAC des interfaces ethernets de votre machine ?
+        loopback - 00:00:00:00:00:00
+        eth0 - 48:4d:7e:c6:33:41
+        vboxnet0 - 0a:00:27:00:00:00
+        
+        Quelles sont les adresses et préfixes des réseaux (pas des interfaces) associés à eth0 et vboxnet0 ?
+        eth0 - 10.9.184.0
+        vboxnet - 192.168.56.0
+        
+        À quoi sert l'interface lo, quelle(s) est (sont) son (ses) adresse(s) IP ?
+        C'est une interface qui permet a la machine de communiquer a elle-meme
+        127.0.0.1
+        
+        Quelles sont les services en écoute en TCP/IPv4 sur votre machine (numéro de port, nom) ?
+        tcp        0      0 0.0.0.0:44661           0.0.0.0:*               LISTEN     
+		tcp        0      0 127.0.0.54:53           0.0.0.0:*               LISTEN     
+		tcp        0      0 0.0.0.0:39537           0.0.0.0:*               LISTEN     
+		tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN     
+		tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN     
+		tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN 
+        
+        Quelles sont les routes sur votre machine et décrire chaque ligne.
+        Table de routage IP du noyau
+		Destination     Passerelle      Genmask         Indic   MSS Fenêtre irtt Iface
+		0.0.0.0         10.9.184.1      0.0.0.0         UG        0 0          0 eth0
+		10.1.66.87      10.9.184.1      255.255.255.255 UGH       0 0          0 eth0
+		10.1.66.88      10.9.184.1      255.255.255.255 UGH       0 0          0 eth0
+		10.9.184.0      0.0.0.0         255.255.248.0   U         0 0          0 eth0
+		10.9.184.1      0.0.0.0         255.255.255.255 UH        0 0          0 eth0
+		10.9.185.81     0.0.0.0         255.255.255.255 UH        0 0          0 eth0
+		10.9.188.0      10.9.185.81     255.255.255.0   UG        0 0          0 eth0
+		192.168.56.0    0.0.0.0         255.255.255.0   U         0 0          0 vboxnet0
+
+
+

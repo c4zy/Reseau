@@ -1,0 +1,71 @@
+3.2) 
+Commandes ip et ifconfig : en utilisant la commande man, expliquez à quoi servent ces commandes
+
+ip et ipgconfig servent a montrer ou manipuler les routages entre machines dans un meme reseau
+
+
+
+Quelles sont les paramètres permettant d'avoir les informations au niveau MAC et IP ?
+
+La parametre link permet de montrer les infos au niveau MAC et la paramatre address permet de montrer les infos au niveau IP
+
+
+
+Combien d’interfaces Ethernet actives possède chaque machine ?
+
+Chaque machine en possede 3 interfaces ethernet lo (localhost), eth0 et vboxnet0
+
+
+
+À quoi correspond le paramètre MTU ?
+
+MTU correspond a la longueur maximale du message a transmettre (maximal transfer unit)
+
+
+
+Indiquez pour chaque réseau
+        La valeur de son MTU:
+        	lo - 65536, eth0 - 1500, vboxnet0 - 1500
+        	
+        La longueur du préfixe réseau (et du masque quand cela a un sens):
+        	lo - 8v4, 128v6, eth0 - 21v4 ou 64v6, vboxnet0 - 24v4 ou 64v6
+        	
+        L'adresse de réseau et l'adresse de broadcast (quand cela a un sens):
+        	lo - 127.0.0.1 et 127.255.255.255,
+        	eth0 - 10.9.186.133 et 10.9.191.255,
+        	vboxnet0 - 192.168.56.1 et 192.168.56.255
+        	
+        	
+        	
+Commande netstat : expliquez le rôle de la commande netstat:
+
+Sert a afficher les connexions reseau
+
+
+
+À l’aide d'une combinaison d'options dont l'option -a de la commande netstat, retrouvez les services TCP actifs sur votre machine physique ainsi que la liste des connexions TCP en cours. Remarquez la notation host:numero port et l’état courant d’une connexion TCP:
+
+La commande est netstat -a --tcp (-a) affiche tous les sockets et --tcp filtre par protocoles tcp
+
+
+
+À l’aide des options -nr de netstat, précisez les passerelles liées à votre machine physique, quel est leur rôle ? Comparez avec la commande route -n et la bonne option de la commande ip. Pourquoi mettre l'option -n à netstat ou route ?
+
+Les passereles liees sont 10.9.184.1 et 10.9.185.81, -n force les resultants a etre numeriques
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

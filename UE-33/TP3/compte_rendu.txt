@@ -1,0 +1,39 @@
+Utilisez la commande suivante sur la machine client pour envoyer un courrier électronique
+echo "Hello" | mailx -s Test1 user@local.demo
+Quel est le protocole utilisé, expliquez l'échange ?
+
+Le protocole utilisé est SMTP (simple mail transfer protocol
+echo "Hello"                   -> ecrit Hello sur stdin
+mailx -s Test1 user@local.demo -> envoit un mail vers user@local.demo de sujet Test1
+Donc on ecrit un message Hello et on le lance vers mailx -s Test1 user@local.demo,
+ceci l'envoit vers user@local.demo ayant sujet Test1
+
+
+
+Lisez le mail avec les commandes suivantes tout en faisant une écoute wireshark
+fetchmail -kvp pop3 server
+puis mutt
+Quel est le protocole utilisé, expliquez l'échange ?
+
+Le protocole utilisé est POP3 (post office protocol v3)
+fetchmail -kvp pop3 server -> liste tous les messages pop3 envoyés vers server
+mutt                       -> liste tous les messages
+
+
+
+Combien y-a-t-il de connexion(s) tcp ? Peut-on rejouer l'échange avec telnet ?
+Il en a 3 connexions tcp
+Meme si l'échange est faisable avec telnet, il n'est pas recommandé, puis les donnés sensibles comme mots des passe passent en clair (sans cryptographie)
+
+
+Lancez une écoute avec wireshark pour faire une capture du protocole http.
+Connectez-vous sur la machine client et effectuez la commande suivante :
+lynx http://www.local.demo
+Faites de même avec la consultation du serveur de l'université (http://www.univ-tln.fr).
+Idem pour un serveur externe à l'université.
+Pourquoi cela fonctionne-t-il ou ne fonctionne-t-il pas ?
+Si cela fonctionne alors le client supporte des URLS en HTTPS et sinon alors c'est pas le cas, le rajout dune proxy permet de sortir du serveur de l'univ.
+
+
+
+

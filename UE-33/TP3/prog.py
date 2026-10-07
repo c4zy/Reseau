@@ -19,9 +19,11 @@ s.connect(("www.univ-tln.fr", 80))
 
 # 3- construction du message à envoyer, ici une requête http.
 
-request = "GET / HTTP/1.1\r\n"
+request  = "GET / HTTP/1.1\r\n"
 request += "Host: www.univ-tln.fr\r\n"
 request += "Connection: Close\r\n\r\n"
+
+# GET / HTTP/1.1\r\nHost: www.univ-tln.fr\r\nConnection: Close\r\n\r\n
 
 # 4- envoi sur la socket
 

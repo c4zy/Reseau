@@ -1,0 +1,129 @@
+En utilisant les commandes ip et netstat étudiées au TP-1, déterminez :
+
+	Quelles sont toutes les adresses IP de votre machine pour toutes ses interfaces ?
+		localhost: IPv4 - 127.0.0.1/8,     IPv6 - ::1/128
+		eth0     : IPv4 - 10.9.186.153/21, IPv6 - fe80::a6bb:6dff:fecf:32ef/64
+		vboxnet0 : IPv4 - 192.168.56.1/24  IPv6 - fe80::800:27ff:fe00:0/64
+		
+	Quelles sont les adresses MAC des interfaces ethernets de votre machine ?
+	 	localhost: 00:00:00:00:00:00
+	 	eth0     : a4:bb:6d:cf:32:ef
+	 	vboxnet0 : 0a:00:27:00:00:00
+	 	
+	Quelles sont les adresses et préfixes des réseaux (pas des interfaces) associés à eth0 et vboxnet0 ?
+	 	eth0:     10.9.184.0
+	 	vboxnet0: 192.168.56.0
+	 	
+	À quoi sert l'interface lo, quelle(s) est (sont) son (ses) adresse(s) IP ?
+	 	lo sert a permettre la machine de communiquer avec elle meme
+	 	localhost: IPv4 - 127.0.0.1/8, IPv6 - ::1/128
+	 	
+	Quelles sont les services en écoute en TCP/IPv4 sur votre machine (numéro de port, nom) ?
+		Connexions Internet actives (seulement serveurs)
+		Proto Recv-Q Send-Q Adresse locale          Adresse distante        Etat     
+	 	tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN     
+		tcp        0      0 127.0.0.54:53           0.0.0.0:*               LISTEN     
+		tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN     
+		tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN     
+		tcp        0      0 0.0.0.0:36791           0.0.0.0:*               LISTEN     
+		tcp        0      0 0.0.0.0:55981           0.0.0.0:*               LISTEN
+		
+	Quelles sont les routes sur votre machine et décrire chaque ligne.
+		Table de routage IP du noyau
+		Destination     Passerelle      Genmask         Indic   MSS Fenêtre irtt Iface
+		0.0.0.0         10.9.184.1      0.0.0.0         UG        0 0          0 eth0
+		10.1.66.87      10.9.184.1      255.255.255.255 UGH       0 0          0 eth0
+		10.1.66.88      10.9.184.1      255.255.255.255 UGH       0 0          0 eth0
+		10.9.184.0      0.0.0.0         255.255.248.0   U         0 0          0 eth0
+		10.9.184.1      0.0.0.0         255.255.255.255 UH        0 0          0 eth0
+		10.9.185.81     0.0.0.0         255.255.255.255 UH        0 0          0 eth0
+		10.9.188.0      10.9.185.81     255.255.255.0   UG        0 0          0 eth0
+		192.168.56.0    0.0.0.0         255.255.255.0   U         0 0          0 vboxnet0
+		
+		
+		
+Lire la page de manuel concernant la commande (arp):
+	man arp
+
+    Affichez le contenu de la table ARP de l'hôte et de client (celle-ci peut être vide, dans ce cas, effectuez 	sur client la commande suivante ping -c 1 internalnet puis refaites la commande arp):
+    	arp
+    	
+    Même question mais en affichant les adresses IP au lieu des noms de machines.
+		arp -n
+		
+	Sur l'hôte uniquement
+    Exécutez la commande: ping dpt-info.univ-tln.fr. Quelle est l'adresse IP de cette machine ?
+    	10.9.185.15
+        	
+    Que donnent les commandes host dpt-info et la recherche sur le site http://wq.apnic.net/static/search.html pour l'IP 193.49.96.4 (commande host dpt-info.univ-tln.fr mais de l'extérieur). Exécutez la commande host 193.49.96.4 1.1.1.1 qui vous donne le nom de cette machine. Que concluez-vous de cette manipulation et de ses résultats (expliquez bien sûr).
+    	Pour  host dpt-info:
+    		dpt-info.univ-tln.fr has address 10.9.185.15
+    		
+    	Pour la recherche sur le site http://wq.apnic.net/static/search.html pour l'IP 193.49.96.4:
+    		% APNIC found the following authoritative answer from: whois.ripe.net
+
+			% This is the RIPE Database query service.
+			% The objects are in RPSL format.
+			%
+			% The RIPE Database is subject to Terms and Conditions.
+			% See https://docs.db.ripe.net/terms-conditions.html
+
+			% Note: this output has been filtered.
+			%       To receive output for a database update, use the "-B" flag.
+
+			% Information related to '193.49.96.0 - 193.49.96.255'
+
+			% Abuse contact for '193.49.96.0 - 193.49.96.255' is 'certsvp@renater.fr'
+
+			inetnum:	193.49.96.0 - 193.49.96.255
+			netname:	FR-U-TOULON
+			descr:	Universite de Toulon
+			remarks:	**** BEGIN INFORMATION FROM OLD OBJECT ****
+			remarks:	netname:        FR-UTV
+			remarks:	descr:          Universite du Sud Toulon - Var
+			remarks:	descr:          BP20132, 83957 La Garde CEDEX, France
+			remarks:	**** END INFORMATION FROM OLD OBJECT ****
+			country:	FR
+			admin-c:	GPRT556-RIPE
+			tech-c:	GPRT556-RIPE
+			status:	ASSIGNED PA
+			mnt-by:	RENATER-MNT
+			remarks:	changed:        rensvp@renater.fr 20000831
+			remarks:	changed:        rensvp@renater.fr 20230822
+			created:	2002-04-11T13:35:01Z
+			last-modified:	2023-08-24T06:57:32Z
+			source:	RIPE
+
+			% Information related to '193.48.0.0/14AS2200'
+
+			route:	193.48.0.0/14
+			descr:	RENATER
+			origin:	AS2200
+			mnt-by:	RENATER-MNT
+			remarks:	changed:        RenSVP@Renater.fr 19991207
+			created:	1970-01-01T00:00:00Z
+			last-modified:	2015-08-07T13:36:14Z
+			source:	RIPE
+
+			% This query was served by the RIPE Database Query Service version 1.124.1 (ABERDEEN)
+    		
+    Quel est le rôle de la commande host ?
+        host addr/dom sert a lier un domaine a son addresse et vice versa
+        host addr addr sert a trouver les different noms dun addresse partant d'un domaine
+        
+    Exécutez la commande: ping 10.9.185.2. Exécutez la commande host 10.9.185.2 qui vous donne le nom de cette machine. Exécutez la commande host 10.9.185.2 1.1.1.1 et host sinfo2.univ-tln.fr 1.1.1.1. Expliquez le résultat obtenu.
+    	ping envoi des paquets vers 10.9.185.2
+    	host donne le nom de ladresse
+    	host (...) 1.1.1.1 essaie de trouver le nom de l'adresse dans le domaine 1.1.1.1
+    	host (...) 1.1.1.1 essaie de trouver l'adresse dans le domaine 1.1.1.1
+    	
+    Exécutez la commande tracepath avec comme paramètre l'IP de votre machine. Faire de même avec l'IP d'une des machines de la salle. Faire maintenant la commande tracepath sasha, puis tracepath www et tracepath webmail. expliquez les réponses que vous renvoient ces commandes.
+	
+	À partir des observations précédentes essayez de déterminer l'adresse IP et l'adresse MAC de la machine www et s'il y a un problème, expliquez pourquoi.
+		host www -> 10.1.64.80 IPv4
+		pour MAC www n'est pas sur la table arp
+		
+
+    	
+    
+

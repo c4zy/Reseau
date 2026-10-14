@@ -1,129 +1,240 @@
+2) La configuration du réseau sous Unix : Révisions du TP1
+
 En utilisant les commandes ip et netstat étudiées au TP-1, déterminez :
 
-	Quelles sont toutes les adresses IP de votre machine pour toutes ses interfaces ?
-		localhost: IPv4 - 127.0.0.1/8,     IPv6 - ::1/128
-		eth0     : IPv4 - 10.9.186.153/21, IPv6 - fe80::a6bb:6dff:fecf:32ef/64
-		vboxnet0 : IPv4 - 192.168.56.1/24  IPv6 - fe80::800:27ff:fe00:0/64
-		
-	Quelles sont les adresses MAC des interfaces ethernets de votre machine ?
-	 	localhost: 00:00:00:00:00:00
-	 	eth0     : a4:bb:6d:cf:32:ef
-	 	vboxnet0 : 0a:00:27:00:00:00
-	 	
-	Quelles sont les adresses et préfixes des réseaux (pas des interfaces) associés à eth0 et vboxnet0 ?
-	 	eth0:     10.9.184.0
-	 	vboxnet0: 192.168.56.0
-	 	
-	À quoi sert l'interface lo, quelle(s) est (sont) son (ses) adresse(s) IP ?
-	 	lo sert a permettre la machine de communiquer avec elle meme
-	 	localhost: IPv4 - 127.0.0.1/8, IPv6 - ::1/128
-	 	
-	Quelles sont les services en écoute en TCP/IPv4 sur votre machine (numéro de port, nom) ?
-		Connexions Internet actives (seulement serveurs)
-		Proto Recv-Q Send-Q Adresse locale          Adresse distante        Etat     
-	 	tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN     
-		tcp        0      0 127.0.0.54:53           0.0.0.0:*               LISTEN     
-		tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN     
-		tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN     
-		tcp        0      0 0.0.0.0:36791           0.0.0.0:*               LISTEN     
-		tcp        0      0 0.0.0.0:55981           0.0.0.0:*               LISTEN
-		
-	Quelles sont les routes sur votre machine et décrire chaque ligne.
-		Table de routage IP du noyau
-		Destination     Passerelle      Genmask         Indic   MSS Fenêtre irtt Iface
-		0.0.0.0         10.9.184.1      0.0.0.0         UG        0 0          0 eth0
-		10.1.66.87      10.9.184.1      255.255.255.255 UGH       0 0          0 eth0
-		10.1.66.88      10.9.184.1      255.255.255.255 UGH       0 0          0 eth0
-		10.9.184.0      0.0.0.0         255.255.248.0   U         0 0          0 eth0
-		10.9.184.1      0.0.0.0         255.255.255.255 UH        0 0          0 eth0
-		10.9.185.81     0.0.0.0         255.255.255.255 UH        0 0          0 eth0
-		10.9.188.0      10.9.185.81     255.255.255.0   UG        0 0          0 eth0
-		192.168.56.0    0.0.0.0         255.255.255.0   U         0 0          0 vboxnet0
-		
-		
-		
-Lire la page de manuel concernant la commande (arp):
-	man arp
+Quelles sont toutes les adresses IP de votre machine pour toutes ses interfaces ?
+	lo -> IPv4 127.0.0.1/8   IPv6 ::1/128
+	eth0 -> IPv4 10.9.186.112   IPv6 fe80::529a:4cff:fe1d:d49b/64
+	vboxnet0 -> IPv4 10.9.186.112/21   IPv6 fe80::529a:4cff:fe1d:d49b/64
 
-    Affichez le contenu de la table ARP de l'hôte et de client (celle-ci peut être vide, dans ce cas, effectuez 	sur client la commande suivante ping -c 1 internalnet puis refaites la commande arp):
-    	arp
-    	
-    Même question mais en affichant les adresses IP au lieu des noms de machines.
-		arp -n
-		
-	Sur l'hôte uniquement
-    Exécutez la commande: ping dpt-info.univ-tln.fr. Quelle est l'adresse IP de cette machine ?
-    	10.9.185.15
-        	
-    Que donnent les commandes host dpt-info et la recherche sur le site http://wq.apnic.net/static/search.html pour l'IP 193.49.96.4 (commande host dpt-info.univ-tln.fr mais de l'extérieur). Exécutez la commande host 193.49.96.4 1.1.1.1 qui vous donne le nom de cette machine. Que concluez-vous de cette manipulation et de ses résultats (expliquez bien sûr).
-    	Pour  host dpt-info:
-    		dpt-info.univ-tln.fr has address 10.9.185.15
-    		
-    	Pour la recherche sur le site http://wq.apnic.net/static/search.html pour l'IP 193.49.96.4:
-    		% APNIC found the following authoritative answer from: whois.ripe.net
+Quelles sont les adresses MAC des interfaces ethernets de votre machine ?
+	lo -> MAC 00:00:00:00:00:00
+	eth0 -> MAC 50:9a:4c:1d:d4:9b
+	vboxnet0 -> MAC 0a:00:27:00:00:00
 
-			% This is the RIPE Database query service.
-			% The objects are in RPSL format.
-			%
-			% The RIPE Database is subject to Terms and Conditions.
-			% See https://docs.db.ripe.net/terms-conditions.html
+Quelles sont les adresses et préfixes des réseaux (pas des interfaces) associés à eth0 et vboxnet0 ?
+	eth0 -> @reseau 10.9.184.1   prefixe 10.9.184.0
+	vboxnet0 -> @reseau 192.168.56.1   prefixe 192.168.56.0
 
-			% Note: this output has been filtered.
-			%       To receive output for a database update, use the "-B" flag.
-
-			% Information related to '193.49.96.0 - 193.49.96.255'
-
-			% Abuse contact for '193.49.96.0 - 193.49.96.255' is 'certsvp@renater.fr'
-
-			inetnum:	193.49.96.0 - 193.49.96.255
-			netname:	FR-U-TOULON
-			descr:	Universite de Toulon
-			remarks:	**** BEGIN INFORMATION FROM OLD OBJECT ****
-			remarks:	netname:        FR-UTV
-			remarks:	descr:          Universite du Sud Toulon - Var
-			remarks:	descr:          BP20132, 83957 La Garde CEDEX, France
-			remarks:	**** END INFORMATION FROM OLD OBJECT ****
-			country:	FR
-			admin-c:	GPRT556-RIPE
-			tech-c:	GPRT556-RIPE
-			status:	ASSIGNED PA
-			mnt-by:	RENATER-MNT
-			remarks:	changed:        rensvp@renater.fr 20000831
-			remarks:	changed:        rensvp@renater.fr 20230822
-			created:	2002-04-11T13:35:01Z
-			last-modified:	2023-08-24T06:57:32Z
-			source:	RIPE
-
-			% Information related to '193.48.0.0/14AS2200'
-
-			route:	193.48.0.0/14
-			descr:	RENATER
-			origin:	AS2200
-			mnt-by:	RENATER-MNT
-			remarks:	changed:        RenSVP@Renater.fr 19991207
-			created:	1970-01-01T00:00:00Z
-			last-modified:	2015-08-07T13:36:14Z
-			source:	RIPE
-
-			% This query was served by the RIPE Database Query Service version 1.124.1 (ABERDEEN)
-    		
-    Quel est le rôle de la commande host ?
-        host addr/dom sert a lier un domaine a son addresse et vice versa
-        host addr addr sert a trouver les different noms dun addresse partant d'un domaine
-        
-    Exécutez la commande: ping 10.9.185.2. Exécutez la commande host 10.9.185.2 qui vous donne le nom de cette machine. Exécutez la commande host 10.9.185.2 1.1.1.1 et host sinfo2.univ-tln.fr 1.1.1.1. Expliquez le résultat obtenu.
-    	ping envoi des paquets vers 10.9.185.2
-    	host donne le nom de ladresse
-    	host (...) 1.1.1.1 essaie de trouver le nom de l'adresse dans le domaine 1.1.1.1
-    	host (...) 1.1.1.1 essaie de trouver l'adresse dans le domaine 1.1.1.1
-    	
-    Exécutez la commande tracepath avec comme paramètre l'IP de votre machine. Faire de même avec l'IP d'une des machines de la salle. Faire maintenant la commande tracepath sasha, puis tracepath www et tracepath webmail. expliquez les réponses que vous renvoient ces commandes.
+À quoi sert l'interface lo, quelle(s) est (sont) son (ses) adresse(s) IP ?
+	lo permet a la machine de s'auto connecter 
+	son addresse IP est 127.0.0.1/8 en IPv4 et ::1/128
 	
-	À partir des observations précédentes essayez de déterminer l'adresse IP et l'adresse MAC de la machine www et s'il y a un problème, expliquez pourquoi.
-		host www -> 10.1.64.80 IPv4
-		pour MAC www n'est pas sur la table arp
-		
+Quelles sont les services en écoute en TCP/IPv4 sur votre machine (numéro de port, nom) ?
+	netstat --tcp -n
+	Connexions Internet actives (sans serveurs)
+	Proto Recv-Q Send-Q Adresse locale          Adresse distante        Etat      
+	tcp        0      0 10.9.186.112:777        10.100.0.12:4045        ESTABLISHED
+	tcp        0      0 10.9.186.112:40530      10.100.1.73:3128        ESTABLISHED
+	tcp        0      0 10.9.186.112:40542      10.100.1.73:3128        ESTABLISHED
+	tcp        0      0 10.9.186.112:716        10.100.0.12:2049        ESTABLISHED
+	tcp        0      0 10.9.186.112:52636      10.1.66.44:636          ESTABLISHED
+	tcp        0      0 10.9.186.112:54360      10.100.1.73:3128        ESTABLISHED
+	tcp        0      0 10.9.186.112:40470      10.9.185.8:10514        ESTABLISHED
+	
+	idem pour netstat --inet -n
+	car aucune connexion a protocole UDP ou IPv6
 
-    	
-    
+Quelles sont les routes sur votre machine et décrire chaque ligne.
+	netstat --route -n
+	Table de routage IP du noyau
+	Destination     Passerelle      Genmask         Indic   MSS Fenêtre irtt Iface
+	0.0.0.0         10.9.184.1      0.0.0.0         UG        0 0          0 eth0
+	10.1.66.87      10.9.184.1      255.255.255.255 UGH       0 0          0 eth0
+	10.1.66.88      10.9.184.1      255.255.255.255 UGH       0 0          0 eth0
+	10.9.184.0      0.0.0.0         255.255.248.0   U         0 0          0 eth0
+	10.9.184.1      0.0.0.0         255.255.255.255 UH        0 0          0 eth0
+	10.9.185.81     0.0.0.0         255.255.255.255 UH        0 0          0 eth0
+	10.9.188.0      10.9.185.81     255.255.255.0   UG        0 0          0 eth0
+	192.168.56.0    0.0.0.0         255.255.255.0   U         0 0          0 vboxnet0
+	
+	
+	
+3) ARP et addresses IP
+	
+    Affichez le contenu de la table ARP de l'hôte et de client (celle-ci peut être vide, dans ce cas, effectuez sur client la commande suivante ping -c 1 internalnet puis refaites la commande arp)
+    arp
+    Adresse                  TypeMap AdresseMat          Indicateurs           Iface
+	gateway                  ether   ec:9b:8b:61:d8:b3   C                     eth0
+	sinfo8.univ-tln.fr       ether   bc:24:11:a2:dd:ef   C                     eth0
+	sinfo1.univ-tln.fr       ether   bc:24:11:ed:c2:c7   C                     eth0
+	sinfo6                   ether   bc:24:11:4d:40:3d   C                     eth0
 
+    Même question mais en affichant les adresses IP au lieu des noms de machines.
+    arp -n
+	Adresse                  TypeMap AdresseMat          Indicateurs           Iface
+	10.9.184.1               ether   ec:9b:8b:61:d8:b3   C                     eth0
+	10.9.185.8               ether   bc:24:11:a2:dd:ef   C                     eth0
+	10.9.185.1               ether   bc:24:11:ed:c2:c7   C                     eth0
+	10.9.185.6               ether   bc:24:11:4d:40:3d   C                     eth0
+
+Exécutez la commande: ping dpt-info.univ-tln.fr. Quelle est l'adresse IP de cette machine ?
+	10.9.185.15
+	
+Que donnent les commandes host dpt-info et la recherche sur le site http://wq.apnic.net/static/search.html pour l'IP 193.49.96.4 (commande host dpt-info.univ-tln.fr mais de l'extérieur). Exécutez la commande host 193.49.96.4 1.1.1.1 qui vous donne le nom de cette machine. Que concluez-vous de cette manipulation et de ses résultats (expliquez bien sûr).
+	host dpt-info
+	dpt-info.univ-tln.fr has address 10.9.185.15
+
+	pour la recherche
+	% APNIC found the following authoritative answer from: whois.ripe.net
+
+	% This is the RIPE Database query service.
+	% The objects are in RPSL format.
+	%
+	% The RIPE Database is subject to Terms and Conditions.
+	% See https://docs.db.ripe.net/terms-conditions.html
+
+	% Note: this output has been filtered.
+	%       To receive output for a database update, use the "-B" flag.
+
+	% Information related to '193.49.96.0 - 193.49.96.255'
+
+	% Abuse contact for '193.49.96.0 - 193.49.96.255' is 'certsvp@renater.fr'
+
+	inetnum:	193.49.96.0 - 193.49.96.255
+	netname:	FR-U-TOULON
+	descr:	Universite de Toulon
+	remarks:	**** BEGIN INFORMATION FROM OLD OBJECT ****
+	remarks:	netname:        FR-UTV
+	remarks:	descr:          Universite du Sud Toulon - Var
+	remarks:	descr:          BP20132, 83957 La Garde CEDEX, France
+	remarks:	**** END INFORMATION FROM OLD OBJECT ****
+	country:	FR
+	admin-c:	GPRT556-RIPE
+	tech-c:	GPRT556-RIPE
+	status:	ASSIGNED PA
+	mnt-by:	RENATER-MNT
+	remarks:	changed:        rensvp@renater.fr 20000831
+	remarks:	changed:        rensvp@renater.fr 20230822
+	created:	2002-04-11T13:35:01Z
+	last-modified:	2023-08-24T06:57:32Z
+	source:	RIPE
+
+	% Information related to '193.48.0.0/14AS2200'
+
+	route:	193.48.0.0/14
+	descr:	RENATER
+	origin:	AS2200
+	mnt-by:	RENATER-MNT
+	remarks:	changed:        RenSVP@Renater.fr 19991207
+	created:	1970-01-01T00:00:00Z
+	last-modified:	2015-08-07T13:36:14Z
+	source:	RIPE
+
+	% This query was served by the RIPE Database Query Service version 1.124.1 (ABERDEEN)
+	
+	on conclue que eth0 = dpt-info
+	
+Quel est le rôle de la commande host ?	
+	on conclue que host sert a associer une machine a son nom et vice versa
+	host suivi de deux machines sert a demander a la deuxieme machine d'effectuer DNS-lookup de la premiere et retourner les resultats
+	
+Exécutez la commande: ping 10.9.185.2. Exécutez la commande host 10.9.185.2 qui vous donne le nom de cette machine. Exécutez la commande host 10.9.185.2 1.1.1.1 et host sinfo2.univ-tln.fr 1.1.1.1. Expliquez le résultat obtenu.
+	on voit que le serveur 1.1.1.1 ne connait pas le serveur local sinfo2.univ-tln.fr
+	
+Exécutez la commande tracepath avec comme paramètre l'IP de votre machine. Faire de même avec l'IP d'une des machines de la salle. Faire maintenant la commande tracepath sasha, puis tracepath www et tracepath webmail. expliquez les réponses que vous renvoient ces commandes.
+	on voit que la connexion machine-elle meme est sur le meme reseau
+	on voit que la connexion machine-salle meme aussi sur le meme reseau
+	la distance sasha est d'exactement 1 routeurs
+	la distance www est d'au moins 1 routeur
+	la distance webmail est d'au moins 9 routeurs
+	
+À partir des observations précédentes essayez de déterminer l'adresse IP et l'adresse MAC de la machine www et s'il y a un problème, expliquez pourquoi.
+	pour l'adresse IPv4 on fait host www
+	www.univ-tln.fr is an alias for lbwebdmz.univ-tln.fr.
+	lbwebdmz.univ-tln.fr has address 10.1.64.80
+	
+	comme la table arp affiche que les voisins et que www est a au moins un routeur de distance, elle sera pas affiche, on connait pas son addresse MAC
+	
+	
+	
+3.1 Analyse du protocole ARP
+Nous allons utiliser un programme d'écoute de trames capable de décoder les protocoles que nous avons étudiés : wireshark (http://www.wireshark.org/).
+
+Une introduction à wireshark est présentée ici .
+
+Pour effectuer une capture dans le réseau virtuel, vous pourrez lancer le programme wireshark via ssh sur une des machines virtuelles (à vous de bien choisir laquelle), et commencer la capture de trames. En effet, comme il n'y a pas d'interface graphique sur les machines virtuelles, vous devez passer par l'intermédiaire de la machine hôte à l'aide de la commande suivante:
+
+ssh -Y root@192.168.56.X wireshark
+
+avec 192.168.56.X l'adresse IP d'une machine virtuelle choisie.
+
+Wireshark propose des filtres appliqués lors de la capture et ainsi ne seront gardés que les paquets pour lesquels le filtre est vrai. Les filtres se décomposent en 3 parties :
+
+Le protocole qui peut être eth, ip, arp, rarp, tcp ou encore udp,
+La direction qui peut être src ou dst,
+Un champ qui peut être host, net ou port suivi d'une valeur.
+
+Les opérateurs and, or et not peuvent être utilisés pour combiner des filtres. Attention, il existe aussi des filtres d'affichage (appliqués après la capture).
+
+Analysez une séquence de résolution d'adresse avec ARP en suivant la méthode suivante :
+
+Faites les manipulations à partir de la machine client ;
+Affichez la table ARP SANS RÉSOLUTION DES NOMS, vérifiez qu'elle ne contient pas d'entrée pour internalnet. Dans le cas contraire, recommencez après avoir redémarré la machine client) ;
+Faites un ping de la machine client qui envoie 2 paquets vers la machine internalnet mais en utilisant son adresse IP comme paramètre, pas son nom ;
+Arrêtez la capture ;
+La table ARP a-t-elle été modifiée ?
+	 Oui elle contient maintenant internalnet
+Que s'est-il passé ? À qui est destinée la première trame ? D'où vient la seconde ? À quoi correspondent les 4 trames suivantes ?
+	1ere trame est destine a broadcast
+	2nde trame vient de CamdusCo_a8:f5:5f
+	cest la requete
+	
+Quelle est la longueur utile des données transportées dans la trame Ethernet lors d'une requête ARP selon la théorie ? Cela correspond-il avec les données issues de la capture ?
+	42
+	
+	
+	
+4) Analyse de la commande ping
+
+Lisez le man de la commande ping.
+
+Quel est le protocole utilisé par cette commande ?
+	protocole ICMP
+
+Sans mettre de filtre dans wireshark, sur la machine client, exécutez la commande ping vers la machine server pour envoyer 2 requêtes au maximum.
+
+Pour les 2 premiers échanges ICMP (requête-réponse), analysez le contenu : de la trame ethernet, du paquet IP, et de ICMP. Détaillez les adresses sources et destinations.
+	request
+	Ethernet: source 08:00:27:93:89:31   dest 08:00:27:ca:61:6c
+	IPv4: source 192.168.56.104   dest 192.168.56.103
+	ICMP: source 192.168.56.104   dest 192.168.56.103
+	
+	reply
+	Ethernet: source 08:00:27:ca:61:6c   dest 08:00:27:93:89:31
+	IPv4:     source 192.168.56.103      dest 192.168.56.104
+	ICMP:     source 192.168.56.103      dest 192.168.56.104
+	
+Sur la machine client, exécutez la commande ping -c 2 10.1.78.254 (la machine externalnet doit être allumée)
+Que se passe-t-il ? Quel message est retourné par ping ? Quelles trames circulent sur le réseau ?
+	ping dit que les n'ont pas été reçus et ont ete perdus
+	des trames ICMP circulent
+	
+Quel message est retourné par ping si vous essayez d'atteindre une machine du réseau local adjacente mais qui n'existe pas (par exemple 192.168.2.42) ? Quelles trames circulent sur le réseau ?
+	ping dit que les n'ont pas été reçus et ont ete perdus
+	des trames ARP circulent
+	
+Quel message est retourné par ping si vous essayez d'atteindre une machine du réseau virtuel non adjacente mais qui n'existe pas (par exemple 192.168.1.42) ? Quelles trames circulent sur le réseau ?
+	ping dit que les n'ont pas été reçus et ont ete perdus
+	des trames ICMP circulent
+	
+En lisant le man, que fait la commande (sur client) ping -s 3200 -c 1 server ?
+	ping -s 3200 -c 1 server envoi une fois un paquet de 3200 octets vers server
+	
+Que s'est-il passé au niveau des trames Ethernet (en utilisant wireshark) ?
+	le paquet a ete fragmentée en deux de 1514 octets + plus un de 282 octets car pmu = 1500
+
+Sachant que les machines adjacentes sont considérées comme étant celles du voisinage, affichez l'équivalent de la table ARP mais en IPv6 sur la machine client ;
+	ip neighbor
+Toujours sur la machine client, exécutez la commande ping6 vers la machine server pour envoyer 3 requêtes maximum.
+	ping6 -c 3 server
+Décrivez les échanges (requête-réponse) qui ont eu lieu et analysez le contenu : de la trame Ethernet, du paquet IPv6, et de ICMPv6.
+	des trames ICMPv6 circulent
+Que vaut maintenant la table de voisinage sur la machine client ? Pourquoi ?
+	La table a additione deux nouvels addresses, REACHABLE
+
+
+	
+
+
+	

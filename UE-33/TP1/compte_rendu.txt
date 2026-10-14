@@ -1,0 +1,151 @@
+4.1) Les fichiers de configuration
+
+Vous allez analyser la configuration réseau de plusieurs machines d'un point de vue Ethernet et des services Internet offerts.
+
+Pour chacun des fichiers ci-dessous vous regarderez la page du manuel (commande man) sur la machine physique, puis vous regarderez son contenu sur votre machine physique et les deux machines virtuelles serveur et client. Vous ferez les liens avec les notions vues en cours telles que les adressages et la résolution d'adresse.s
+
+Fichiers /etc/netplan/10-vlan-uprime.yaml (machine physique) et /opt/ethX.sh (machines virtuelles, X étant un numéro d'interface) : affichez leur contenu. À quoi peuvent servir ces fichiers ? Comparez sur les informations données pour les trois machines.
+	/etc/netplan/10-vlan-uprime.yaml (machine physique)
+	Sert a donner la version de reseau, et les cables ethernets actives aussi que leur protocole dhcp
+	
+	/opt/ethX.sh
+	
+Fichier /etc/hosts : affichez son contenu (en utilisant la commande less). À quoi sert ce fichier (man	hosts) ? Pourquoi ne contient-il pas le nom de l’ensemble des machines de l’université ?
+	/etc/hosts (machine physique)
+	Sert a faire le lien entre addresses IPv4/6 avec le nom des domaines qui correspondent
+	Il contient que les reseaux ou la machine hote est connecté
+	
+Fichier /etc/resolv.conf : affichez son contenu. À quoi sert ce fichier (man resolv.conf) ?
+	/etc/resolv.conf
+	Sert a connecter le client au resolveur DNS, le fichier liste les domaines de recherche configurés
+	
+À quoi correspond l'interface loopback  ?
+	loopback (lo)
+	Sert a possibiliter la machine de s'auto-communiquer
+	
+Fichier /etc/ethertypes : affichez son contenu. À quoi sert ce fichier ? À quelle couche OSI correspondent ces valeurs ?
+	/etc/ethertypes
+	Sert a donner le code hex de toute forme de communication ethernet
+	Couche physique
+	
+Fichier /etc/protocols : affichez son contenu. À quoi sert ce fichier ? À quelle couche OSI correspondent ces valeurs ?
+	/etc/protocols
+	Sert a donner le code des protocoles IP
+	Couche Réseau
+	
+Fichier /etc/services : affichez son contenu. À quoi sert ce fichier ? Retrouvez le numéro de port des services TELNET, FTP et SMTP.
+	/etc/services
+	Sert a donner le code des services reseaux, le protocole UDP/TCP
+	Couche Transport
+	telnet -> 23 en TCP
+	ftp -> 21 en TCP
+	smtp -> 25 en TCP
+		
+		
+	
+4.2) Les commandes liées à la configuration
+Commandes ip et ifconfig : en utilisant la commande man, expliquez à quoi servent ces commandes. Quelles sont les paramètres permettant d'avoir les informations au niveau MAC et IP ? Combien d’interfaces Ethernet actives possède chaque machine ? À quoi correspond le paramètre MTU ?
+	ip/ipconfig sert a donner les routages et reseaux connectés de la machine
+	Informations au niveau MAC -> ip maddress
+	Informations au niveau IP -> ip address
+	
+	Hote -> eth0
+	Client et server -> eth0 et eth1
+	MTU correspond a maximal transmission unit, la taille maximale de tranfert
+	
+Indiquez pour chaque réseau
+
+La valeur de son MTU,
+La longueur du préfixe réseau (et du masque quand cela a un sens)
+L'adresse de réseau et l'adresse de broadcast (quand cela a un sens) ?
+
+	MTU de eth0 -> 1500
+	MTU de eth1 -> 1500
+	MTU de lo -> 65536 (hote) 16436 (machines virtuelles)
+	
+	lo -> 8
+	eth0 -> 21
+	vboxnet0 -> 24
+	
+	@ reseau lo -> 127.0.0.0
+	@ reseau eth0 -> 10.9.184.0
+	@ broadcast eth0 -> 10.9.191.255
+	@ reseau vboxnet0 -> 192.168.56.0
+	@ broadcast vboxnet0 -> 192.168.56.255
+	
+Commande netstat : expliquez le rôle de la commande netstat.
+
+	netstat
+	Affiche les tables de routage et les connexions réseau
+
+À l’aide d'une combinaison d'options dont l'option -a de la commande netstat, retrouvez les services TCP actifs sur votre machine physique ainsi que la liste des connexions TCP en cours. Remarquez la notation host:numero port et l’état courant d’une connexion TCP.
+	
+	netstat -t
+	Connexions Internet actives (sans serveurs)
+	Proto Recv-Q Send-Q Adresse locale          Adresse distante        Etat      
+	tcp        0      0 u1-111-17.univ-tln.:883 sinfo6:nfs              ESTABLISHED
+	tcp        0      0 u1-111-17.univ-tl:56614 ldap-vip1.univ-tl:ldaps ESTABLISHED
+	tcp        0      0 u1-111-17.univ-tln.:928 nasetu:4045             ESTABLISHED
+	tcp        0      0 u1-111-17.univ-tl:36538 calamar.univ-tln.f:3128 ESTABLISHED
+	tcp        0      0 u1-111-17.univ-tl:36550 calamar.univ-tln.f:3128 TIME_WAIT  
+	tcp        0      0 u1-111-17.univ-tl:39892 calamar.univ-tln.f:3128 ESTABLISHED
+	tcp        0      0 u1-111-17.univ-tl:39896 calamar.univ-tln.f:3128 ESTABLISHED
+	tcp        0      0 u1-111-17.univ-tln:1005 nasetu:nfs              ESTABLISHED
+	tcp        0      0 u1-111-17.univ-tl:59520 sinfo8.univ-tln.f:10514 ESTABLISHED
+
+À l’aide des options -nr de netstat, précisez les passerelles liées à votre machine physique, quel est leur rôle ? Comparez avec la commande route -n et la bonne option de la commande ip. Pourquoi mettre l'option -n à netstat ou route ?
+
+	netstat -nr
+	Table de routage IP du noyau
+	Destination     Passerelle      Genmask         Indic   MSS Fenêtre irtt Iface
+	0.0.0.0         10.9.184.1      0.0.0.0         UG        0 0          0 eth0
+	10.1.66.87      10.9.184.1      255.255.255.255 UGH       0 0          0 eth0
+	10.1.66.88      10.9.184.1      255.255.255.255 UGH       0 0          0 eth0
+	10.9.184.0      0.0.0.0         255.255.248.0   U         0 0          0 eth0
+	10.9.184.1      0.0.0.0         255.255.255.255 UH        0 0          0 eth0
+	10.9.185.81     0.0.0.0         255.255.255.255 UH        0 0          0 eth0
+	10.9.188.0      10.9.185.81     255.255.255.0   UG        0 0          0 eth0
+	192.168.56.0    0.0.0.0         255.255.255.0   U         0 0          0 vboxnet0
+
+	route -n
+	Table de routage IP du noyau
+	Destination     Passerelle      Genmask         Indic Metric Ref    Use Iface
+	0.0.0.0         10.9.184.1      0.0.0.0         UG    100    0        0 eth0
+	10.1.66.87      10.9.184.1      255.255.255.255 UGH   100    0        0 eth0
+	10.1.66.88      10.9.184.1      255.255.255.255 UGH   100    0        0 eth0
+	10.9.184.0      0.0.0.0         255.255.248.0   U     100    0        0 eth0
+	10.9.184.1      0.0.0.0         255.255.255.255 UH    100    0        0 eth0
+	10.9.185.81     0.0.0.0         255.255.255.255 UH    100    0        0 eth0
+	10.9.188.0      10.9.185.81     255.255.255.0   UG    100    0        0 eth0
+	192.168.56.0    0.0.0.0         255.255.255.0   U     0      0        0 vboxnet0
+	
+	ip route
+	default via 10.9.184.1 dev eth0 proto dhcp src 10.9.186.137 metric 100 
+	10.1.66.87 via 10.9.184.1 dev eth0 proto dhcp src 10.9.186.137 metric 100 
+	10.1.66.88 via 10.9.184.1 dev eth0 proto dhcp src 10.9.186.137 metric 100 
+	10.9.184.0/21 dev eth0 proto kernel scope link src 10.9.186.137 metric 100 
+	10.9.184.1 dev eth0 proto dhcp scope link src 10.9.186.137 metric 100 
+	10.9.185.81 dev eth0 proto dhcp scope link src 10.9.186.137 metric 100 
+	10.9.188.0/24 via 10.9.185.81 dev eth0 proto dhcp src 10.9.186.137 metric 100 
+	192.168.56.0/24 dev vboxnet0 proto kernel scope link src 192.168.56.1 
+
+	-n permet d'afficher sans résolution d'addresse
+	
+	
+
+
+5.1) Connexion à distance avec ssh
+
+La syntaxe (courte) de la commande est la suivante : ssh user@machine, user étant un compte valide existant sur machine (nom ou adresse IP).
+
+Depuis la machine hôte, connectez-vous au compte user, mot de passe user, de client. À quoi correspond et à quoi sert la question qui est posée lors de la première connexion ?
+	Sert a assurer que la connextion est fiable, et enregistrer la machine comme une machine de confiance
+
+Une fois la connexion établie, vous êtes dans la même situation qu’avec le service telnet : prise de contrôle / terminal à distance. Vous testerez quelques commandes (listage de répertoires, ...).
+
+Consultez le répertoire .ssh/ sur votre machine hôte. Que contiennent maintenant les fichiers ?
+	Les repertoire contienne maintenant known_hosts
+
+
+
+

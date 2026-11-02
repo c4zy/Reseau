@@ -232,6 +232,69 @@ Décrivez les échanges (requête-réponse) qui ont eu lieu et analysez le conte
 	des trames ICMPv6 circulent
 Que vaut maintenant la table de voisinage sur la machine client ? Pourquoi ?
 	La table a additione deux nouvels addresses, REACHABLE
+	
+	
+
+5   Analyse de la commande traceroute
+
+Pour cette exercice, il faut que externalnet soit lancée (elle donne accès à l'extérieur). Lisez le man de la commande traceroute.
+
+Capturez les trames ICMP et UDP en partance ou à destination de la machine client et lancez la commande traceroute microsoft.com.
+
+Arrêtez la capture dès la fin de la commande ou après 4 réponses. Déduisez de l'analyse des trames le fonctionnement de cette commande (cf. paramètre Time To Live (TTL) de ping).
+	traceroute (addresse) envoi des ping de ttl de plus en plus grand de facon a trouver le chemin routeur par routeur vers un adresse
+	
+	
+
+
+6   Les problèmes de sécurité
+
+Après avoir configuré une écoute wireshark, depuis la machine client faites un telnet sur la machine server en utilisant le compte de login user dont le password est user.
+
+Analysez la connexion TCP (les SYN et ACK, et les tailles de fenêtres)
+Comment se déroule la connexion applicative ? Que constatez-vous dans wireshark ?
+	On a un paquet SYN de 192.168.56.104 vers 192.168.56.103 (demande de synchronisation)
+	Puis un paquet SYN, ACK de 192.168.56.103 vers 192.168.56.104 (acception de syn et demande de syn)
+	Finalement un paquet ACK de 192.168.56.104 vers 192.168.56.103 (acception de acception)
+	
+Essayez de saisir des commandes ? Que constatez-vous dans wireshark ?
+	Le fait d'ecrire dans le terminal transmet des paquets vers la machine auquelle on est connecte
+	
+Testez un clic droit sur un des premiers segments de la connexion puis « Follow TCP Stream ».
+	Follow TCP stream montre en totalite l'echange des donnes des deux machines connectes
+	
+Que fait la commande ssh ? Effectuez la même connexion en ssh en écoutant les trames avec wireshark. Que remarquez-vous ?
+	ssh permet une connexion securisée, on constante que le three-way-handshake se reporte aussi comme une methode pour la synchronisation sur connexion ssh, et que l'echange de donnes est chiffrée, contrairement a telnet ou l'echange passe en clair
+
+
+
+
+7   Réglage du pare-feu
+
+La machine internalnet joue le rôle de routeur entre les réseaux de la machine client et le reste des machines. Par sa position d'intermédiaire, internalnet est le bon endroit pour introduire des règles de sécurité pour limiter les types de connexions entre les deux réseaux.
+
+        Sur la machine internalnet, affichez les régles de la table filter concernant le protocole IPv6 (le firewall se manipule à l'aide des commandes iptables pour IPv4 et ip6tables pour IPv6).
+        	(fait) ip6tables -t filter -L | less 
+        
+        Combien de chaînes sont définies ?
+        	3 INPUT OUTPUT FOWARD
+        
+        La chaîne qui concerne le transfert de données est la chaîne FORWARD. Quelle est la politique par défaut ?
+        	DROP
+        	
+        Quelles sont les limitations en place pour la chaîne FORWARD ?
+        	
+        
+        Modifiez la sous-chaîne loc_frwd de façon à bloquer les paquets ICMPv6 fragmentés. Pour cela, vous devrez ajouter une nouvelle règle en utilisant le module ipv6header et son option header (voir la page man de iptables-extensions). La cible de cette règle sera DROP.
+        Vérifiez le fonctionnement de votre règle en effectuant un ping IPv6 nécessitant une fragmentation. Assurez-vous qu'un ping de petite taille n'est pas filtré.
+        Ajoutez, toujours dans la sous-chaîne loc_frwd, une règle afin d'interdire les connexions ssh IPv6 vers la machine server, avec la cible DROP.
+        Vérifiez que votre règle fonctionne bien uniquement dans le sens client-server.
+        Modifiez les règles que vous avez ajoutées afin que la cible ne soit plus DROP mais REJECT. Quel comportement cela a-t-il modifié pour l'utilisateur sur la machine client et dans la capture wireshark.
+
+
+	
+
+
 
 
 	

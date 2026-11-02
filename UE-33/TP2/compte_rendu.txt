@@ -283,13 +283,40 @@ La machine internalnet joue le rôle de routeur entre les réseaux de la machine
         	DROP
         	
         Quelles sont les limitations en place pour la chaîne FORWARD ?
-        	
+        	eth0 - loc_frwd
+        	eth1 - drop
+        	eth2 - drop
+        	*    - log
+        	*    - drop
         
         Modifiez la sous-chaîne loc_frwd de façon à bloquer les paquets ICMPv6 fragmentés. Pour cela, vous devrez ajouter une nouvelle règle en utilisant le module ipv6header et son option header (voir la page man de iptables-extensions). La cible de cette règle sera DROP.
+        	(fait) ip6tables -A loc_frwd -p ipv6-icmp -m ipv6header --header frag -j DROP
+        	
+        	-A loc_frwd : ajoute une règle à la chaîne loc_frwd
+        	-p ipv6-icmp : sélectionne le protocole ICMPv6
+        	-m ipv6header : utilise le module ipv6header
+        	--header frag : sélectionne les paquets contenant un en-tête IPv6 de fragmentation
+        	-j DROP : bloque les paquets correspondants
+        	
         Vérifiez le fonctionnement de votre règle en effectuant un ping IPv6 nécessitant une fragmentation. Assurez-vous qu'un ping de petite taille n'est pas filtré.
+        	(fait) ping6 google.com
+        	
         Ajoutez, toujours dans la sous-chaîne loc_frwd, une règle afin d'interdire les connexions ssh IPv6 vers la machine server, avec la cible DROP.
+        	ip6tables -A loc_frwd -p tcp -d server --dport 22 -j DROP
+        	
+        	-A loc_frwd : ajoute la règle à la sous-chaîne
+			-p tcp : sélectionne le protocole TCP
+			-d server : indique la destination (machine server)
+			--dport 22 : cible le port SSH
+			-j DROP : bloque les paquets
+        	
         Vérifiez que votre règle fonctionne bien uniquement dans le sens client-server.
+        	(fait) ip6tables -L loc_frwd -n -v
+        
         Modifiez les règles que vous avez ajoutées afin que la cible ne soit plus DROP mais REJECT. Quel comportement cela a-t-il modifié pour l'utilisateur sur la machine client et dans la capture wireshark.
+        	(fait)
+        	ip6tables -R loc_fwrd 3 -p tcp -d server --dport 22 -j REJECT
+        	ip6tables -R loc_frwd 2 -p ipv6-icmp -m ipv6header --header frag -j REJECT
 
 
 	

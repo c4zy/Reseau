@@ -1,0 +1,79 @@
+2   SMTP et POP3
+
+Avant de commencer l'analyse, vérifiez le fonctionnement du serveur d'e-mail.
+Connectez-vous à la machine virtuelle server avec le compte root
+	(fait) ssh -Y user@192.168.56.104
+
+Vérifiez l'état du service de gestion d'e-mail postfix avec la commande /usr/local/etc/init.d/postfix status
+	(fait) /usr/local/etc/init.d/postfix status
+
+Si le résultat n'est pas running, il faut démarrer le service par la commande /usr/local/etc/init.d/postfix start
+	(fait) /usr/local/etc/init.d/postfix start
+
+Vérifiez que le service est dorénavant bien actif.
+	(fait) /usr/local/etc/init.d/postfix status
+
+Utilisez la commande suivante sur la machine client pour envoyer un courrier électronique
+echo "Hello" | mailx -s Test1 user@local.demo
+	(fait) echo "Hello" | mailx -s Test1 user@local.demo
+	echo "Hello" |   : produit le texte "Hello"
+	(cmd1) | (cmd2)  : envoi le resultat de cmd1 dans cmd2
+	mailx [-s [sujet]] [nom@dest] : programme pour envoyer des mails
+	-s [sujet]       : sujet du courier
+	
+Quel est le protocole utilisé, expliquez l'échange ?
+	mailx utilise le protocole SMTP
+	d'abord on fait une resolution d'addresse DNS, puis une synchronisation TCP et finalement on envoi le mail par SMTP
+
+Lisez le mail avec les commandes suivantes tout en faisant une écoute wireshark
+fetchmail -kvp pop3 server
+	(fait) fetchmail -kvp pop3 server
+	fetchmail       : programme pour recuperer les mails
+	-kvp
+	 -k (keep)      : garde les mails sur le serveur 
+	 -v (verbose)   : affiche dialogue 
+	 -p [protocole] : protocole
+	server          : serveur depuis lequel on recupere
+puis mutt
+	(fait) mutt
+	mutt : affiche la boite mail de user (celle ou fetchmail a depose les messages)
+
+Quel est le protocole utilisé, expliquez l'échange ?
+	fetchmail utilise le protocole pop3
+	le client resout le nom du serveur par DNS, etablit une connexion TCP par TWH (une resolution @MAC est faite pendant le hand-shake par ICMPv6 car le client choisi de se connecter en IPv6) puis s'authentifie et recupere les mails avec POP3
+	mutt permet de les afficher a l'utilisateur
+	
+Vous pouvez maintenant envoyer et lire un mail « à la main » en utilisant telnet sur les ports smtp/pop du serveur en rejouant les échanges que vous avez capturés.
+    En vous connectant depuis client avec la commande telnet sur le port 25 de server, envoyez un email.
+    	(fait sur server) netstat -nlt (pour trouver le bon addresse)
+    	(fait sur client) telnet @serveur qui ecoute sur port 25 25
+    	netstat : affiche les connexions
+    	-nlt
+    	 -n (numerique)
+    	 -l (filtre "LISTEN")
+    	 -t (filtre "TCP")
+    	 
+    	 (donc en conclusion)
+    	 telnet 192.168.1.1 25
+    	 HELO client.local.demo
+    	 MAIL FROM:<user@client.local.demo>
+    	 RCPT TO:<user@local.demo>
+    	 DATA
+    	 Subject: Sujet
+    	 
+    	 Hello
+    	 .
+    	 QUIT
+    	 
+    	 (verification)
+    	 fetchmail -kvp pop3 server
+    	 (auth) user, user
+    	 mutt
+    	 
+    En vous connectant depuis client avec la commande telnet sur le port 110 de server, lisez le mail que vous venez d'envoyer (les commandes utiles du protocole sont USER, PASS, LIST et RETR, cf. la RFC de POP3).
+
+	
+	
+	
+	
+

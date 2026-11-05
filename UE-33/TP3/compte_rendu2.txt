@@ -1,3 +1,5 @@
+(grep proto /etc/services)
+
 2   SMTP et POP3
 
 Avant de commencer l'analyse, vérifiez le fonctionnement du serveur d'e-mail.
@@ -44,33 +46,205 @@ Quel est le protocole utilisé, expliquez l'échange ?
 	mutt permet de les afficher a l'utilisateur
 	
 Vous pouvez maintenant envoyer et lire un mail « à la main » en utilisant telnet sur les ports smtp/pop du serveur en rejouant les échanges que vous avez capturés.
-    En vous connectant depuis client avec la commande telnet sur le port 25 de server, envoyez un email.
-    	(fait sur server) netstat -nlt (pour trouver le bon addresse)
-    	(fait sur client) telnet @serveur qui ecoute sur port 25 25
-    	netstat : affiche les connexions
-    	-nlt
-    	 -n (numerique)
-    	 -l (filtre "LISTEN")
-    	 -t (filtre "TCP")
-    	 
-    	 (donc en conclusion)
-    	 telnet 192.168.1.1 25
-    	 HELO client.local.demo
-    	 MAIL FROM:<user@client.local.demo>
-    	 RCPT TO:<user@local.demo>
-    	 DATA
-    	 Subject: Sujet
-    	 
-    	 Hello
-    	 .
-    	 QUIT
-    	 
-    	 (verification)
-    	 fetchmail -kvp pop3 server
-    	 (auth) user, user
-    	 mutt
-    	 
+En vous connectant depuis client avec la commande telnet sur le port 25 de server, envoyez un email.
+	(fait sur server) netstat -nlt (pour trouver le bon addresse)
+	(fait sur client) telnet @serveur qui ecoute sur port 25 25
+	netstat : affiche les connexions
+	-nlt
+	 -n (numerique)
+	 -l (filtre "LISTEN")
+	 -t (filtre "TCP")
+	 
+	 (donc en conclusion)
+	 telnet 192.168.1.1 25
+	 HELO client.local.demo
+	 MAIL FROM:<user@client.local.demo>
+	 RCPT TO:<user@local.demo>
+	 DATA
+	 Subject: Sujet
+	 
+	 Hello
+	 .
+	 QUIT
+	 
+	 (verification)
+	 fetchmail -kvp pop3 server
+	 (auth) user, user
+	 mutt
+	 (smtp est port 25)
+	 
     En vous connectant depuis client avec la commande telnet sur le port 110 de server, lisez le mail que vous venez d'envoyer (les commandes utiles du protocole sont USER, PASS, LIST et RETR, cf. la RFC de POP3).
+    (faire sur server) netstat -ntl (on voit que 0.0.0.0:110 indique que tcp est ecoute partout)
+    (faire sur client) telnet 192.168.56.103 110
+    (fait) USER user
+    (fait) PASS user
+    (fait) LIST (montre la liste de mails en boite)
+    (fait) RETR nbre_id (montre le mail correspondant a nbre_id)
+    
+
+
+3   FTP
+
+RFC pour FTP http://www.ietf.org/rfc/rfc959.txt .
+
+Lancez une écoute avec wireshark.
+	(fait sur hote) ssh -Y user@192.168.56.104 wireshark
+
+Connectez vous en ftp avec la commande cftp depuis la machine client vers la machine virtuelle contenant le serveur ftp (tapez cftp -h ou juste cftp pour connaître ses paramètres d'utilisation).
+	(fait sur client) cftp -p 21 -u user 192.168.56.103
+
+Explorez les répertoires distants et téléchargez un fichier (il existe également les commandes ftpget et ftpput sur les machines virtuelles).
+	(fait) ftpget -u user -p user -P 21 server ./copie fichier
+
+Combien y-a-t-il de connexion(s) tcp ? Peut-on rejouer l'échange avec telnet ?
+	FTP utilise deux connexions distinctes :
+
+	A. Connexion de contrôle
+
+	Port TCP 21.
+	Permet d'envoyer les commandes FTP.
+	Exemple : USER, PASS, LIST, RETR.
+
+	B. Connexion de données
+
+	Utilisée pour transférer les fichiers.
+	Utilisée également pour récupérer la liste des fichiers.
+	Son port dépend du mode FTP (actif ou passif).
+    
+	Avec une seule connextion ftp, cet echange n'est pas rejouable en telnet.
+
+4   HTTP
+
+Lancez une écoute avec wireshark pour faire une capture du protocole http.
+	(fait)
+Connectez-vous sur la machine client et effectuez la commande suivante:
+lynx http://www.local.demo
+	(fait) http://www.local.demo
+
+Faites de même avec la consultation du serveur de l'université (http://www.univ-tln.fr).
+Idem pour un serveur externe à l'université.
+	(fait) http://www.univ-tln.fr (erreur)
+	(fait) http://www.google.com (erreur)
+	(erreur dans les deux)
+	
+Pourquoi cela fonctionne-t-il ou ne fonctionne-t-il pas ?
+	a cause des proxys 
+	
+Recommencez en positionnant les variables d'environnement http_proxy pour le client. Rappel :
+export http_proxy=http://proxy.univ-tln.fr:3128
+export https_proxy=http://proxy.univ-tln.fr:3128
+
+apres ceci aucune fonctione (jsp pourquoi)
+
+
+
+5   Les sockets en python - le client
+5.1   Le principe
+
+Les sockets sont basées sur une architecture client/serveur: Le serveur décide d'accepter les demandes de connexion sur un port particulier, tandis que le client demande une connexion sur le serveur sur ce même port.
+
+Une fois la connexion établie, les deux programmes peuvent communiquer sur la socket à l'aide de commandes de réception et d'émission.
+5.2   Comprendre et créer un client
+
+À partir de l'exemple de code en python3, testez et comprenez le rôle chaque ligne de celui-ci (paramètres, valeurs, etc).
+
+# coding: utf-8
+
+""" Un client http très simple. """
+
+import socket
+
+# Tout d'abord une interrogation du serveur DNS, même si on ne s'en sert pas.
+
+print("Interrogation du DNS: " + socket.gethostbyname("www.univ-tln.fr"))
+
+# 1- Construction d'un objet qui représente la socket
+#    vers laquelle le client veut se connecter
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# 2- ouverture de la connexion vers la socket
+
+s.connect(("www.univ-tln.fr", 80))
+
+# 3- construction du message à envoyer, ici une requête http.
+
+request = "GET / HTTP/1.1\r\n"
+request += "Host: www.univ-tln.fr\r\n"
+request += "Connection: Close\r\n\r\n"
+
+# 4- envoi sur la socket
+
+s.send(request.encode('UTF-8'))
+
+# 5- lecture de 15 octets sur la socket (augmenter pour lire plus...)
+
+data = s.recv(15)
+
+# 6- convertion de la séquence de 15 octets en une chaîne de caractères
+#    et l'afficher.
+
+print(data.decode('utf-8'))
+
+# 7- fermeture de la socket
+s.close()
+
+5.3   Client Time
+
+En vous inspirant de l’exemple précédent écrivez deux clients pour le protocole Time (RFC 868), l'un utilisant le protocole TCP et l'autre utilisant le protocole UDP. Un serveur pour ce protocole est en écoute en IPv4 sur la machine sinfo2.univ-tln.fr.
+
+Attention, cet exercice comporte plusieurs difficultés :
+
+    Ce protocole retourne le temps sur 4 octets. Il faudra donc convertir le tableau de 4 octets lu en un entier long (voir le module struct https://docs.python.org/3/library/struct.html#module-struct).
+    Pour assurer la portabilité de la représentation des nombres entre les différentes architectures, un standard est fixé sur le réseau, il faut donc faire des conversions avant écriture et après lecture sur la socket, soit avec des paramètres du module struct, soit en utilisant des fonctions explicites :
+
+        socket.ntohl(x) : Convert 32-bit positive integers from network to host byte order. On machines where the host byte order is the same as network byte order, this is a no-op; otherwise, it performs a 4-byte swap operation.
+        socket.htonl(x) : Convert 32-bit positive integers from host to network byte order. On machines where the host byte order is the same as network byte order, this is a no-op; otherwise, it performs a 4-byte swap operation.
+
+    D'autres fonctions utiles sur les sockets : help(socket) dans l'interprète ou https://docs.python.org/3/library/socket.html
+    Il existe plusieurs habitudes différentes pour indiquer une date dans un système informatique
+        En secondes depuis 1er janvier 1970 à minuit UTC,
+        En secondes depuis le 1er janvier 1900 à minuit UTC, ... (pour information, il y a 2208988800 s entre les deux),
+        On peut utiliser la fonction time.ctime() pour afficher de façon lisible la date (cf. https://docs.python.org/3/library/time.html pour les conversions de temps en python).
+
+5.4   Client FTP
+
+L'échange suivant montre un échange avec le protocole FTP (sur le serveur virtuel de local.demo) pour se connecter et obtenir des informations sur le système.
+
+220 bftpd 4.2 at 192.168.56.101 ready.
+
+USER user
+
+331 Password please.
+
+PASS user
+
+230 User logged in.
+
+SYST
+
+215 UNIX Type: L8
+
+L'idée générale dans cet exercice est d'écrire un programme Python qui utilisera un automate pour obtenir les informations système par ftp : le programme lit sur la socket et, en fonction de ce qu'il lit et de l'état dans lequel il se trouve, envoie le bon message.
+
+On peut résumer ainsi :
+
+    Lire les lignes à l'infini
+
+        Si je suis à l'état 0 et que je reçois une chaîne qui commence par 220, j'envoie USER ... et je passe à l'état 1.
+        Si je suis à l'état 1 ...
+        ...
+        Ne pour oublier de sortir et de déconnecter.
+
+Pour faciliter le traitement des chaînes sur les sockets, ce qui arrive très souvent :
+
+    Il est par exemple possible de lire une socket comme un fichier texte avec for line in s.makefile('r'):
+    Les fonctions de manipulation sur les chaînes sont rappelées ici : chaines. Il existe aussi la fonction booléenne s.startswith("....") avec s une chaîne de caractères.
+
+
+
+
+	
 
 	
 	
